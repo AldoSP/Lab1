@@ -1,0 +1,36 @@
+{
+  "generator-jhipster": {
+    "applicationType": "monolith",
+    "authenticationType": "jwt",
+    "baseName": "jhipster2026",
+    "buildTool": "maven",
+    "cacheProvider": "ehcache",
+    "clientFramework": "react",
+    "clientTheme": "none",
+    "creationTimestamp": 1789783308690,
+    "databaseType": "sql",
+    "defaultCommand": "app",
+    "devDatabaseType": "mysql",
+    "enableHibernateCache": true,
+    "enableTranslation": true,
+    "entities": [],
+    "feignClient": null,
+    "jhipsterVersion": "9.4.0",
+    "jwtSecretKey": "YThjM2JlZmJiNTcwZGU5NDczZGMyMzg0OWNlOWE3ZjExNWY4OGZkMDk4YTkzYTg5YzBhNDcxNmIxZTM5YTZkNGY3OTIxZjNlMzA5YmQwMWEwNmU1NjE4NDI3YTVlMmFmZmVmMmE0Mzc5NGUxM2Q4ZWMxODI3NzVhMjVmYTAwYzY=",
+    "languages": ["es"],
+    "microfrontend": null,
+    "microfrontends": [],
+    "nativeLanguage": "es",
+    "packageName": "com.udea",
+    "prodDatabaseType": "mysql",
+    "promptValues": {
+      "nativeLanguage": "es"
+    },
+    "reactive": false,
+    "serverPort": null,
+    "serviceDiscoveryType": null,
+    "syncUserWithIdp": null,
+    "testFrameworks": ["gatling"],
+    "withAdminUi": true
+  }
+}
