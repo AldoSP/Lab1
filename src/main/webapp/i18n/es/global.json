@@ -6,7 +6,11 @@
       "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
       "entities": {
         "main": "Entidades",
-        "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
+        "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)",
+        "pasajero": "Pasajero",
+        "reserva": "Reserva",
+        "vuelo": "Vuelo",
+        "asiento": "Asiento"
       },
       "account": {
         "main": "Cuenta",

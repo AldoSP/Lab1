@@ -97,6 +97,20 @@ public class ExceptionTranslator extends ResponseEntityExceptionHandler {
         if (
             ex instanceof com.udea.service.InvalidPasswordException
         ) return (ProblemDetailWithCause) new InvalidPasswordException().getBody();
+        if (ex instanceof com.udea.service.SeatUnavailableException) {
+            return (ProblemDetailWithCause) new BadRequestAlertException(
+                "Seat is not available",
+                "reserva",
+                "asientonotavailable"
+            ).getBody();
+        }
+        if (ex instanceof com.udea.service.SeatBelongsToDifferentFlightException) {
+            return (ProblemDetailWithCause) new BadRequestAlertException(
+                "Seat belongs to a different flight",
+                "reserva",
+                "asientowrongflight"
+            ).getBody();
+        }
 
         if (
             ex instanceof ErrorResponseException exp && exp.getBody() instanceof ProblemDetailWithCause problemDetailWithCause
