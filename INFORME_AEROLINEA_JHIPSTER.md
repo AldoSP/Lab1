@@ -3,109 +3,68 @@
 ## Sistema de reservas de una aerolínea con JHipster
 
 **Asignatura:** Fundamentos de Sistemas de Información
-
 **Proyecto:** Sistema de reservas de aerolínea
-
 **Autor:** Estudiante individual
-
 **Fecha:** 19 de septiembre de 2026
 
 ## 1. Introducción
 
-Este informe documenta la construcción de un sistema de reservas para una aerolínea utilizando JHipster. El desarrollo siguió la estructura trabajada en clase: generación de una aplicación base, definición del modelo mediante JDL, generación automática de las capas del sistema, ejecución de pruebas, configuración de MySQL y despliegue mediante Docker.
+Este informe presenta el desarrollo de un sistema web para administrar reservas de una aerolínea. La aplicación permite gestionar pasajeros, vuelos, asientos y reservas mediante operaciones CRUD, relaciones entre entidades y reglas de negocio propias del dominio.
 
-El proyecto se implementó como una aplicación monolítica con backend en Spring Boot, frontend en React y persistencia relacional en MySQL.
+El proyecto se implementó como una aplicación monolítica con JHipster, Spring Boot, React, TypeScript y MySQL. Además, se incorporaron autenticación JWT, migraciones con Liquibase, paginación, pruebas automatizadas y despliegue mediante Docker.
 
-## 2. Objetivo
+## 2. Objetivos
 
-Desarrollar una aplicación web que permita administrar pasajeros, vuelos, asientos y reservas de una aerolínea. La aplicación debe permitir operaciones CRUD, manejar las relaciones entre las entidades, utilizar paginación, organizar la lógica mediante clases de servicio y ejecutarse con una base de datos MySQL y contenedores Docker.
+### 2.1 Objetivo general
 
-## 3. Tecnologías utilizadas
+Desarrollar una aplicación web funcional para la gestión de reservas de una aerolínea utilizando el flujo de trabajo y las herramientas estudiadas en la asignatura.
 
-- JHipster 9.4.0.
-- Spring Boot 4.1.1.
-- Java 21.
-- Maven.
-- React 19.3.0.
-- TypeScript.
-- MySQL 26.7.0.
-- Liquibase para las migraciones de base de datos.
-- Docker y Docker Compose.
-- JWT para autenticación.
-- JUnit, Mockito y pruebas de integración generadas por JHipster.
+### 2.2 Objetivos específicos
 
-## 4. Configuración inicial de la aplicación
+- Modelar pasajeros, vuelos, asientos y reservas mediante un archivo JDL.
+- Generar las capas principales del sistema con JHipster.
+- Implementar relaciones entre las entidades y operaciones CRUD con paginación.
+- Validar que solo se puedan reservar asientos disponibles y pertenecientes al vuelo seleccionado.
+- Configurar la persistencia en MySQL mediante migraciones Liquibase.
+- Ejecutar pruebas unitarias, de integración y validaciones de estilo.
+- Construir y desplegar la aplicación utilizando Docker y Docker Compose.
 
-La aplicación se generó como un monolito con la siguiente configuración:
+## 3. Breve marco teórico
 
-- Tipo de aplicación: `monolith`.
-- Autenticación: JWT.
-- Base de datos: SQL.
-- Base de datos de desarrollo y producción: MySQL.
-- Herramienta de construcción: Maven.
-- Framework cliente: React.
-- Proveedor de caché: Ehcache.
-- Internacionalización habilitada con español como idioma principal.
-- Paginación habilitada para las entidades del dominio.
-- Clases de servicio habilitadas mediante `serviceClass`.
+### 3.1 JHipster
 
-La aplicación generada conserva el nombre técnico `jhipster2026`, que corresponde al nombre utilizado al crear la plantilla inicial.
+JHipster es una plataforma de generación de aplicaciones que integra tecnologías de backend, frontend, persistencia, seguridad y despliegue. A partir de una configuración y un modelo JDL puede generar entidades JPA, repositorios, servicios, controladores REST, migraciones de base de datos y pantallas CRUD.
 
-## 5. Modelo del dominio
+### 3.2 Arquitectura de la aplicación
 
-El modelo se definió en [aerolinea.jdl](aerolinea.jdl). Las entidades son:
+El sistema sigue una arquitectura monolítica por capas. Spring Boot gestiona el backend y expone servicios REST; las capas `domain`, `repository`, `service` y `web.rest` separan el modelo, el acceso a datos, la lógica de negocio y la comunicación HTTP. React y TypeScript proporcionan la interfaz web.
 
-### 5.1 Pasajero
+### 3.3 Persistencia y migraciones
 
-Representa a la persona que realiza una reserva.
+MySQL almacena la información de la aplicación. Liquibase permite versionar los cambios del esquema mediante migraciones, de modo que la estructura de la base de datos pueda crearse y actualizarse de forma controlada.
 
-Atributos:
+### 3.4 Seguridad, pruebas y contenedores
 
-- `nombre`: texto obligatorio.
-- `apellido`: texto obligatorio.
-- `email`: texto obligatorio y único.
-- `telefono`: texto opcional.
-- `fechaNacimiento`: fecha opcional.
+La autenticación utiliza tokens JWT. JUnit y Mockito permiten verificar el comportamiento del código, mientras que las pruebas de integración validan la interacción entre sus componentes. Docker y Docker Compose empaquetan la aplicación y MySQL para facilitar su ejecución en un entorno reproducible.
 
-### 5.2 Vuelo
+## 4. Procedimiento a seguir
 
-Representa un vuelo disponible de la aerolínea.
+### 4.1 Configuración inicial
 
-Atributos:
+La aplicación se generó como un monolito con autenticación JWT, base de datos SQL en MySQL, frontend React, caché Ehcache, internacionalización en español, paginación y clases de servicio mediante `serviceClass`. El nombre técnico generado fue `jhipster2026`.
 
-- `numeroVuelo`: texto obligatorio y único.
-- `origen`: texto obligatorio.
-- `destino`: texto obligatorio.
-- `fechaSalida`: fecha y hora obligatoria.
-- `fechaLlegada`: fecha y hora obligatoria.
+Las tecnologías utilizadas fueron JHipster 9.4.0, Spring Boot 4.1.1, Java 21, Maven, React 19.3.0, TypeScript, MySQL, Liquibase, Docker, Docker Compose, JUnit y Mockito.
 
-### 5.3 Asiento
+### 4.2 Diseño del modelo
 
-Representa un asiento disponible dentro de un vuelo.
+El modelo se definió en [aerolinea.jdl](aerolinea.jdl). Sus entidades son:
 
-Atributos:
+- **Pasajero:** `nombre`, `apellido`, `email` único, `telefono` y `fechaNacimiento`.
+- **Vuelo:** `numeroVuelo` único, `origen`, `destino`, `fechaSalida` y `fechaLlegada`.
+- **Asiento:** `numero`, `clase`, `disponible` y el vuelo al que pertenece.
+- **Reserva:** `codigo` único, `fechaReserva`, `estado`, pasajero, vuelo y asiento.
 
-- `numero`: texto obligatorio.
-- `clase`: texto obligatorio.
-- `disponible`: valor booleano obligatorio.
-- `vuelo`: vuelo al que pertenece el asiento.
-
-### 5.4 Reserva
-
-Representa la reserva realizada por un pasajero.
-
-Atributos:
-
-- `codigo`: texto obligatorio y único.
-- `fechaReserva`: fecha y hora obligatoria.
-- `estado`: texto obligatorio.
-- `pasajero`: pasajero que realiza la reserva.
-- `vuelo`: vuelo reservado.
-- `asiento`: asiento seleccionado.
-
-## 6. Relaciones
-
-El modelo final contiene las siguientes relaciones:
+Las relaciones finales son:
 
 ```text
 Pasajero 1 ---- * Reserva
@@ -114,7 +73,7 @@ Vuelo    1 ---- * Asiento
 Asiento  1 ---- * Reserva
 ```
 
-En términos de JDL, se utilizaron estas relaciones:
+En JDL se expresaron de la siguiente manera:
 
 ```jdl
 relationship OneToMany {
@@ -128,217 +87,91 @@ relationship ManyToOne {
 }
 ```
 
-La relación entre `Asiento` y `Vuelo` es importante. La disponibilidad de un asiento debe ser independiente para cada vuelo. Por ejemplo, el asiento `1500` del vuelo 1 no es el mismo registro que el asiento `1500` del vuelo 2.
+La relación entre `Asiento` y `Vuelo` garantiza que la disponibilidad sea independiente para cada vuelo. Por ejemplo, el asiento `1500` de un vuelo no es el mismo registro que el asiento `1500` de otro vuelo.
 
-## 7. Generación del código
+### 4.3 Generación de la aplicación
 
-La generación se realizó importando el archivo JDL con JHipster:
+La generación se realizó con:
 
 ```powershell
 npx jhipster import-jdl aerolinea.jdl --skip-checks --skip-git
 ```
 
-JHipster generó automáticamente:
+JHipster generó entidades JPA, repositorios Spring Data, clases de servicio, controladores REST, migraciones Liquibase, datos de prueba, modelos TypeScript, pantallas CRUD en React, rutas y pruebas. Las entidades generadas se encuentran en `.jhipster/` y el código se distribuye en los paquetes `domain`, `repository`, `service` y `web.rest`.
 
-- Entidades JPA.
-- Repositorios Spring Data.
-- Clases de servicio.
-- Controladores REST.
-- Migraciones Liquibase.
-- Datos de prueba.
-- Modelos TypeScript.
-- Pantallas CRUD en React.
-- Rutas y opciones de navegación.
-- Pruebas unitarias e integración.
+### 4.4 Implementación de las reglas de negocio
 
-Las entidades generadas se encuentran en `.jhipster/`, y el código resultante se distribuye en los paquetes `domain`, `repository`, `service` y `web.rest`.
+Además del código generado, se implementaron las siguientes reglas:
 
-## 8. Reglas de negocio implementadas
+1. Si `disponible` es `false`, la reserva se rechaza con HTTP 400.
+2. Cuando una reserva se crea correctamente, el asiento cambia a `disponible = false`.
+3. El asiento debe pertenecer al mismo vuelo seleccionado en la reserva.
 
-Además del código generado automáticamente, se implementaron reglas específicas para que el sistema se comporte como una aplicación real de reservas.
+Estas validaciones se implementaron en [ReservaService.java](src/main/java/com/udea/service/ReservaService.java), utilizando `SeatUnavailableException` y `SeatBelongsToDifferentFlightException`. Los mensajes en español se agregaron en [error.json](src/main/webapp/i18n/es/error.json).
 
-### 8.1 No se puede reservar un asiento no disponible
+### 4.5 Persistencia y ejecución en desarrollo
 
-Cuando el atributo `disponible` del asiento es `false`, el servicio rechaza la reserva y devuelve un error HTTP 400.
+Liquibase crea y actualiza el esquema de MySQL. La migración final agrega `vuelo_id` a la tabla `asiento` y su clave foránea hacia `vuelo`.
 
-### 8.2 El asiento se bloquea después de una reserva
-
-Cuando una reserva se crea correctamente, el asiento seleccionado se actualiza con `disponible = false`.
-
-### 8.3 El asiento debe pertenecer al vuelo seleccionado
-
-El servicio verifica que el vuelo asociado al asiento sea el mismo vuelo indicado en la reserva. Si son diferentes, la reserva es rechazada.
-
-Estas reglas se implementaron en [ReservaService.java](src/main/java/com/udea/service/ReservaService.java), utilizando las excepciones:
-
-- `SeatUnavailableException`.
-- `SeatBelongsToDifferentFlightException`.
-
-La traducción al español se agregó en [error.json](src/main/webapp/i18n/es/error.json):
-
-- `El asiento seleccionado no está disponible para esta reserva.`
-- `El asiento seleccionado pertenece a otro vuelo.`
-
-## 9. Persistencia y migraciones
-
-JHipster configuró Liquibase para crear y actualizar el esquema de MySQL. La migración final agrega la columna `vuelo_id` en la tabla `asiento` y su clave foránea hacia `vuelo`.
-
-La base de datos se ejecuta mediante:
+Para iniciar la base de datos y la aplicación en Windows se utilizaron:
 
 ```powershell
 docker compose -f src/main/docker/mysql.yml up --wait
-```
-
-Durante el cambio de modelo fue necesario recrear el volumen local de MySQL para aplicar limpiamente el nuevo esquema. Esto eliminó los datos de prueba existentes, pero no afectó al código ni a las migraciones del proyecto.
-
-## 10. Ejecución en desarrollo
-
-Para ejecutar la base de datos:
-
-```powershell
-docker compose -f src/main/docker/mysql.yml up --wait
-```
-
-Para ejecutar el backend en Windows:
-
-```powershell
 npm run backend:start
-```
-
-Para ejecutar el frontend con Vite:
-
-```powershell
 npm run start
 ```
 
-La aplicación de desarrollo se puede consultar normalmente en:
+La aplicación de desarrollo se consulta en `http://localhost:9000` y el backend en `http://localhost:8080`. Durante el cambio de modelo fue necesario recrear el volumen local de MySQL para aplicar limpiamente el esquema actualizado.
 
-```text
-http://localhost:9000
-```
+### 4.6 Pruebas
 
-El backend se ejecuta en:
-
-```text
-http://localhost:8080
-```
-
-## 11. Pruebas realizadas
-
-Se ejecutaron pruebas unitarias y de integración con Maven:
+Las pruebas se ejecutaron con:
 
 ```powershell
 .\mvnw.cmd verify
 ```
 
-Resultado:
+El resultado fue de 189 pruebas exitosas, sin fallos ni errores, sin violaciones de Checkstyle y con construcción Maven exitosa. Las pruebas específicas de `ReservaService` verifican el rechazo de asientos no disponibles, el bloqueo del asiento después de reservarlo y el rechazo de asientos pertenecientes a otro vuelo.
 
-- 189 pruebas ejecutadas correctamente.
-- 0 fallos.
-- 0 errores.
-- 0 pruebas omitidas con error.
-- 0 violaciones de Checkstyle.
-- Construcción Maven exitosa.
+### 4.7 Despliegue
 
-También se añadieron pruebas específicas para `ReservaService` que verifican:
-
-- Rechazo de un asiento no disponible.
-- Cambio del asiento a no disponible después de reservarlo.
-- Rechazo de un asiento perteneciente a otro vuelo.
-
-## 12. Despliegue con Docker
-
-Se construyó la imagen de producción con Jib mediante Maven:
+La imagen de producción se construyó con Jib:
 
 ```powershell
 .\mvnw.cmd -ntp verify "-DskipTests=true" "-Dskip.npm=true" -Pprod jib:dockerBuild
 ```
 
-La opción `-Dskip.npm=true` fue necesaria porque la política local de npm 12 bloqueaba la instalación de dependencias durante el proceso Maven. Las dependencias ya estaban instaladas y el frontend podía construirse con los archivos disponibles.
-
-Luego se inició el sistema completo:
+La propiedad `-Dskip.npm=true` fue necesaria por la política local de npm 12; las dependencias ya estaban instaladas. Después se inició el sistema completo:
 
 ```powershell
 docker compose -f src/main/docker/app.yml up -d --wait
 ```
 
-El despliegue contiene:
+El despliegue incluye los contenedores de la aplicación y MySQL, una red interna, health checks y migraciones Liquibase durante el arranque. La aplicación desplegada respondió en `http://localhost:8080` y su endpoint de salud devolvió HTTP 200 con estado `UP`.
 
-- Contenedor de la aplicación JHipster.
-- Contenedor de MySQL.
-- Red interna entre los servicios.
-- Health checks para MySQL y la aplicación.
-- Migraciones Liquibase ejecutadas durante el arranque.
+### 4.8 Comparación con el procedimiento de clase
 
-La aplicación desplegada responde en:
+El proyecto cumple las actividades principales trabajadas en clase: creación de una aplicación JHipster, uso de JDL, generación automática de entidades, repositorios, servicios, controladores y frontend, configuración de relaciones, paginación, MySQL, Liquibase, pruebas y Docker.
 
-```text
-http://localhost:8080
-```
+Como diferencias justificadas, se conservó el nombre técnico `jhipster2026` de la plantilla inicial, se agregó la relación `Asiento -> Vuelo` para modelar correctamente la disponibilidad por vuelo y se implementaron validaciones adicionales de reserva. También se adaptaron los comandos Maven a Windows mediante `mvnw.cmd` y propiedades entre comillas.
 
-El endpoint de salud respondió con HTTP 200 y estado `UP`.
+## 5. Conclusiones
 
-## 13. Comparación con el ejemplo desarrollado en clase
+Se desarrolló un sistema funcional de reservas de aerolínea siguiendo el flujo de trabajo de JHipster. La aplicación permite administrar pasajeros, vuelos, asientos y reservas, incorpora paginación y clases de servicio, utiliza MySQL y puede ejecutarse mediante Docker.
 
-La implementación sigue la misma estructura general mostrada en clase:
+La relación entre asientos y vuelos permite representar correctamente la disponibilidad, mientras que las reglas de negocio evitan reservas inválidas o inconsistentes. La solución fue validada con 189 pruebas exitosas, sin errores de Checkstyle, y mediante la comprobación del despliegue Docker y de su endpoint de salud.
 
-| Elemento solicitado o mostrado en clase | Estado en el proyecto |
-| --------------------------------------- | --------------------- |
-| Crear una aplicación con JHipster       | Cumplido              |
-| Usar un archivo JDL                     | Cumplido              |
-| Generar entidades automáticamente       | Cumplido              |
-| Generar repositorios                    | Cumplido              |
-| Generar servicios                       | Cumplido              |
-| Generar controladores REST              | Cumplido              |
-| Generar interfaz React                  | Cumplido              |
-| Configurar relaciones                   | Cumplido              |
-| Usar paginación                         | Cumplido              |
-| Utilizar MySQL                          | Cumplido              |
-| Utilizar Liquibase                      | Cumplido              |
-| Ejecutar pruebas                        | Cumplido              |
-| Crear configuración Docker              | Cumplido              |
-| Verificar el despliegue                 | Cumplido              |
+## 6. Bibliografía
 
-Por lo tanto, la estructura técnica y el flujo de trabajo coinciden con el ejemplo de clase. La diferencia principal es que el proyecto aplica el procedimiento al dominio de una aerolínea y no al dominio utilizado durante la demostración.
+- JHipster. (s. f.). _JHipster documentation_. https://www.jhipster.tech/
+- Spring. (s. f.). _Spring Boot documentation_. https://docs.spring.io/spring-boot/documentation.html
+- React. (s. f.). _React documentation_. https://react.dev/
+- Liquibase. (s. f.). _Liquibase documentation_. https://docs.liquibase.com/
+- Docker. (s. f.). _Docker documentation_. https://docs.docker.com/
+- MySQL. (s. f.). _MySQL documentation_. https://dev.mysql.com/doc/
 
-## 14. Diferencias con el ejemplo de clase y justificación
+## 7. Código en GitHub
 
-### 14.1 Nombre de la aplicación
+El código fuente del proyecto está disponible en el siguiente repositorio:
 
-La aplicación se llama técnicamente `jhipster2026` en lugar de `aerolineaVirtual`. Esto se debe a que la plantilla inicial ya había sido generada con ese nombre. Cambiarlo posteriormente habría implicado modificar innecesariamente el nombre base, el paquete principal y varias configuraciones.
-
-### 14.2 Relación entre vuelo y asiento
-
-La relación `Asiento -> Vuelo` se agregó aunque el modelo inicial podía interpretarse solamente con `Reserva -> Asiento` y `Reserva -> Vuelo`. La relación adicional es necesaria para representar correctamente la realidad: cada vuelo tiene su propio conjunto de asientos y su propia disponibilidad.
-
-Sin esta relación, reservar el asiento `1500` en un vuelo bloquearía el asiento `1500` para todos los demás vuelos, lo cual sería incorrecto.
-
-### 14.3 Reglas de negocio adicionales
-
-El ejemplo de clase se centraba principalmente en la generación automática de CRUD y relaciones. En este proyecto se agregaron validaciones de negocio para impedir reservas inválidas y bloquear los asientos después de una reserva.
-
-Estas reglas no reemplazan la estructura de JHipster; la complementan dentro de la clase de servicio correspondiente.
-
-### 14.4 Compatibilidad con Windows
-
-Algunos scripts generados utilizaban `./mvnw`, que funciona en entornos Unix pero no directamente en PowerShell. Para ejecutar el proyecto en Windows se ajustaron los scripts relevantes para utilizar `mvnw.cmd`.
-
-También se utilizaron propiedades Maven entre comillas, por ejemplo:
-
-```powershell
-"-Dskip.npm=true"
-```
-
-Esto evita que PowerShell interprete incorrectamente los parámetros y los convierta en fases inválidas de Maven.
-
-### 14.5 Datos de prueba
-
-Al modificar el modelo de base de datos se recreó el volumen local de MySQL. Por esa razón, los registros creados manualmente durante la verificación inicial no se conservaron. El esquema actual se creó nuevamente mediante Liquibase y quedó alineado con el modelo final.
-
-## 15. Conclusiones
-
-Se construyó un sistema funcional de reservas de aerolínea utilizando el flujo de trabajo de JHipster estudiado en clase. La generación automática produjo las capas principales del sistema, la interfaz CRUD, las migraciones de base de datos, las pruebas y la configuración de despliegue.
-
-El proyecto cumple con la administración de pasajeros, vuelos, asientos y reservas, incluye paginación y clases de servicio, utiliza MySQL y puede ejecutarse mediante Docker.
-
-Además, se corrigió la disponibilidad de los asientos para que dependa del vuelo correspondiente y se implementaron reglas que evitan reservas duplicadas o inconsistentes. La aplicación fue validada con 189 pruebas exitosas, sin errores de Checkstyle, y se comprobó el funcionamiento del despliegue Docker mediante el endpoint de salud.
+[https://github.com/AldoSP/Lab1](https://github.com/AldoSP/Lab1)
